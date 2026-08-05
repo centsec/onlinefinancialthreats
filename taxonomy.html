@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The taxonomy — Online Financial Threats</title>
+<meta name="description" content="Search and filter the full catalogue of online financial threats facing UK adolescents by domain, mechanism, legal status and stage of readiness.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back-link" href="index.html">&larr; Back to the introduction</a>
+
+  <header>
+    <h1>The taxonomy</h1>
+    <p class="lede">Every catalogued threat, with its mechanism, domain, legal status under UK law
+    and stage of readiness. Select a threat to see its theory driver, evidence basis and source.</p>
+  </header>
+
+  <main>
+    <h2 id="controls-heading">Search and filter</h2>
+
+    <form class="controls" id="controls" role="search" aria-labelledby="controls-heading">
+      <div class="field">
+        <label for="search">Search threat names and definitions</label>
+        <input type="search" id="search" name="search" autocomplete="off"
+               placeholder="e.g. subscription, loot box, refund">
+      </div>
+
+      <div class="filter-grid">
+        <div class="field">
+          <label for="filter-domain">Domain</label>
+          <select id="filter-domain" data-field="domain"><option value="">All</option></select>
+        </div>
+        <div class="field">
+          <label for="filter-mechanism">Mechanism</label>
+          <select id="filter-mechanism" data-field="mechanism"><option value="">All</option></select>
+        </div>
+        <div class="field">
+          <label for="filter-legalStatus">Legal status</label>
+          <select id="filter-legalStatus" data-field="legalStatus"><option value="">All</option></select>
+        </div>
+        <div class="field">
+          <label for="filter-ttmStage">TTM stage</label>
+          <select id="filter-ttmStage" data-field="ttmStage"><option value="">All</option></select>
+        </div>
+      </div>
+
+      <div class="controls-footer">
+        <p class="count" id="count" role="status">Loading the taxonomy&hellip;</p>
+        <button type="button" class="link-button" id="clear">Clear filters</button>
+      </div>
+    </form>
+
+    <h2 class="visually-hidden-heading" id="results-heading">Results</h2>
+    <ul class="results" id="results" aria-labelledby="results-heading"></ul>
+    <div id="status-panel"></div>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>Work in progress.</strong> This is ongoing work from an MSc Computer Science project.
+    The taxonomy is subject to revision.</p>
+    <p>Each threat's source is given in its source field. All sources remain the property of their
+    authors.</p>
+    <p>Corrections and errors:
+    <a href="mailto:contact@onlinefinancialthreats.co.uk">contact@onlinefinancialthreats.co.uk</a></p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var searchEl = document.getElementById('search');
+  var resultsEl = document.getElementById('results');
+  var countEl = document.getElementById('count');
+  var statusPanel = document.getElementById('status-panel');
+  var clearEl = document.getElementById('clear');
+  var selects = Array.prototype.slice.call(document.querySelectorAll('.filter-grid select'));
+
+  var threats = [];
+
+  // Preferred display order for the ordinal fields. Values are still derived
+  // from the data — this list only decides where a derived value is placed, so
+  // an unrecognised value is not lost, just sorted alphabetically after the
+  // known ones.
+  var ORDERINGS = {
+    legalStatus: ['Lawful Practice', 'Regulatory Breach', 'Criminal Offence'],
+    ttmStage: ['Precontemplation', 'Contemplation', 'Preparation', 'Action / Maintenance']
+  };
+
+  fetch('taxonomy.json')
+    .then(function (response) {
+      if (!response.ok) { throw new Error('HTTP ' + response.status); }
+      return response.json();
+    })
+    .then(init)
+    .catch(showFetchError);
+
+  function init(data) {
+    threats = data.slice().sort(function (a, b) { return a.id - b.id; });
+
+    selects.forEach(function (select) {
+      populateSelect(select, select.getAttribute('data-field'));
+      select.addEventListener('change', apply);
+    });
+
+    searchEl.addEventListener('input', apply);
+    clearEl.addEventListener('click', function () {
+      searchEl.value = '';
+      selects.forEach(function (select) { select.value = ''; });
+      apply();
+      searchEl.focus();
+    });
+
+    apply();
+  }
+
+  function populateSelect(select, field) {
+    var values = Array.from(new Set(threats.map(function (t) { return t[field]; })));
+    var order = ORDERINGS[field];
+
+    values.sort(function (a, b) {
+      if (order) {
+        var ia = order.indexOf(a);
+        var ib = order.indexOf(b);
+        // Values absent from the preferred order (index -1) fall to the end.
+        if (ia !== ib) { return (ia < 0 ? Infinity : ia) - (ib < 0 ? Infinity : ib); }
+      }
+      return a.localeCompare(b, 'en-GB');
+    });
+
+    values.forEach(function (value) {
+      var option = document.createElement('option');
+      option.value = value;
+      option.textContent = value;
+      select.appendChild(option);
+    });
+  }
+
+  function apply() {
+    var query = searchEl.value.trim().toLowerCase();
+
+    // Every active control must match: the free-text query is tested against
+    // the threat name and definition only, and each non-empty select must
+    // equal the threat's value for that field. Combining them with `every`
+    // gives AND semantics, with an empty select contributing nothing.
+    var matches = threats.filter(function (threat) {
+      var textMatch = query === '' ||
+        threat.threat.toLowerCase().indexOf(query) !== -1 ||
+        threat.definition.toLowerCase().indexOf(query) !== -1;
+
+      if (!textMatch) { return false; }
+
+      return selects.every(function (select) {
+        return select.value === '' || threat[select.getAttribute('data-field')] === select.value;
+      });
+    });
+
+    render(matches);
+  }
+
+  function render(matches) {
+    countEl.textContent = 'Showing ' + matches.length + ' of ' + threats.length + ' threats';
+
+    resultsEl.textContent = '';
+    statusPanel.textContent = '';
+
+    if (matches.length === 0) {
+      var empty = document.createElement('div');
+      empty.className = 'message';
+      var text = document.createElement('p');
+      text.textContent = 'No threats match these filters. Try a broader search, ' +
+        'or clear the filters to see the full taxonomy.';
+      empty.appendChild(text);
+      statusPanel.appendChild(empty);
+      return;
+    }
+
+    var fragment = document.createDocumentFragment();
+    matches.forEach(function (threat) { fragment.appendChild(buildCard(threat)); });
+    resultsEl.appendChild(fragment);
+  }
+
+  function buildCard(threat) {
+    var item = document.createElement('li');
+
+    var card = document.createElement('details');
+    card.className = 'card';
+
+    var summary = document.createElement('summary');
+
+    var heading = document.createElement('h3');
+    heading.textContent = threat.threat + ' ';
+    var idEl = document.createElement('span');
+    idEl.className = 'threat-id';
+    idEl.textContent = '#' + threat.id;
+    heading.appendChild(idEl);
+
+    var definition = document.createElement('span');
+    definition.className = 'definition';
+    definition.textContent = threat.definition;
+
+    var tags = document.createElement('span');
+    tags.className = 'tags';
+    tags.appendChild(tag(threat.domain));
+    tags.appendChild(tag(threat.mechanism));
+    tags.appendChild(tag(threat.legalStatus, 'tag-status ' + statusClass(threat.legalStatus)));
+
+    summary.appendChild(heading);
+    summary.appendChild(definition);
+    summary.appendChild(tags);
+
+    var detail = document.createElement('dl');
+    detail.className = 'detail';
+    addRow(detail, 'Theory driver', threat.driver);
+    addRow(detail, 'Stage of readiness',
+      threat.ttmStage + ' (' + threat.evidence.toLowerCase() + ')');
+    addRow(detail, 'Source', threat.source, 'source');
+
+    card.appendChild(summary);
+    card.appendChild(detail);
+    item.appendChild(card);
+    return item;
+  }
+
+  function tag(value, className) {
+    var el = document.createElement('span');
+    el.className = className ? 'tag ' + className : 'tag';
+    el.textContent = value;
+    return el;
+  }
+
+  function addRow(list, label, value, className) {
+    var dt = document.createElement('dt');
+    dt.textContent = label;
+    var dd = document.createElement('dd');
+    if (className) { dd.className = className; }
+    dd.textContent = value;
+    list.appendChild(dt);
+    list.appendChild(dd);
+  }
+
+  // Turns "Regulatory Breach" into "status-regulatory-breach" for the
+  // subdued per-status tint defined in the stylesheet.
+  function statusClass(status) {
+    return 'status-' + status.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+  }
+
+  // Opening the page from the filesystem blocks fetch() under the browser's
+  // same-origin rules, so explain how to serve it over HTTP instead.
+  function showFetchError() {
+    countEl.textContent = '';
+    document.getElementById('controls').hidden = true;
+
+    var box = document.createElement('div');
+    box.className = 'message';
+
+    var line = document.createElement('p');
+    line.textContent = 'The taxonomy could not be loaded. This site reads its data with fetch(), ' +
+      'which browsers block for pages opened directly from disk. Serve the folder over HTTP and ' +
+      'reload:';
+
+    var command = document.createElement('p');
+    var code = document.createElement('code');
+    code.textContent = 'python3 -m http.server';
+    command.appendChild(code);
+
+    box.appendChild(line);
+    box.appendChild(command);
+    statusPanel.appendChild(box);
+  }
+})();
+</script>
+
+</body>
+</html>

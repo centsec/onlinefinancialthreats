@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Online Financial Threats — A taxonomy of the online financial threats facing UK adolescents</title>
+<meta name="description" content="A research taxonomy cataloguing the online financial threats facing UK adolescents aged 11 to 16, classified by mechanism, domain, legal status and readiness to defend.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>Online Financial Threats</h1>
+    <p class="lede">A catalogue of the online financial threats facing UK adolescents aged 11 to 16.</p>
+  </header>
+
+  <main>
+    <!-- PLACEHOLDER PROSE — to be replaced. -->
+    <section class="placeholder" aria-labelledby="intro-heading">
+      <p class="placeholder-note" id="intro-heading">Placeholder introduction — replace before publication</p>
+
+      <p>Adolescents encounter commercial pressure, persuasive design and outright fraud across the
+      games, marketplaces, social platforms and payment services they use every day. These threats are
+      usually studied in separate literatures: dark patterns in one, gambling-like game mechanics in
+      another, online fraud in a third. This taxonomy brings them together into a single catalogue so
+      that they can be compared on equal terms.</p>
+
+      <p>Each threat is classified along four axes. <strong>Mechanism</strong> records how the threat
+      operates on the young person — whether it misleads, dissociates the spend from its cost, activates
+      impulse, applies social influence, introduces chance, or attacks the device or account directly.
+      <strong>Domain</strong> records where it operates, from games and virtual currency to payments and
+      account security. <strong>Legal status</strong> records its standing under UK law, distinguishing
+      lawful commercial practice from regulatory breach and from criminal offence. <strong>TTM stage</strong>
+      records how ready adolescents are to defend against it, using the stages of the Transtheoretical
+      Model, alongside whether that judgement rests on focus-group evidence or on inference from the
+      wider literature.</p>
+
+      <p>The classification is descriptive rather than evaluative. A threat recorded as lawful practice
+      is not thereby harmless, and one recorded as a criminal offence is not necessarily the most
+      commonly encountered. Each entry carries the source it was drawn from, so that the basis of every
+      classification can be checked.</p>
+    </section>
+    <!-- END PLACEHOLDER PROSE -->
+
+    <h2>The taxonomy in figures</h2>
+
+    <div class="figures" id="figures">
+      <p class="count" id="figures-status">Loading figures…</p>
+    </div>
+
+    <p><a class="button" href="taxonomy.html">Browse the taxonomy</a></p>
+  </main>
+
+  <footer class="site-footer">
+    <p><strong>Work in progress.</strong> This is ongoing work from an MSc Computer Science project.
+    The taxonomy is subject to revision.</p>
+    <p>Each threat's source is given in its source field. All sources remain the property of their
+    authors.</p>
+    <p>Corrections and errors:
+    <a href="mailto:contact@onlinefinancialthreats.co.uk">contact@onlinefinancialthreats.co.uk</a></p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var figuresEl = document.getElementById('figures');
+
+  fetch('taxonomy.json')
+    .then(function (response) {
+      if (!response.ok) { throw new Error('HTTP ' + response.status); }
+      return response.json();
+    })
+    .then(renderFigures)
+    .catch(showFetchError);
+
+  function renderFigures(threats) {
+    var total = threats.length;
+
+    // Distinct domain count, derived rather than hard-coded so the figure
+    // tracks the data if the taxonomy is revised.
+    var domains = new Set(threats.map(function (t) { return t.domain; })).size;
+
+    var notCriminal = threats.filter(function (t) {
+      return t.legalStatus !== 'Criminal Offence';
+    }).length;
+    var notCriminalPct = Math.round((notCriminal / total) * 100);
+
+    figuresEl.textContent = '';
+    addFigure(String(total), 'threats catalogued');
+    addFigure(String(domains), 'threat domains');
+    addFigure(notCriminalPct + '%', 'not criminal offences');
+  }
+
+  function addFigure(value, label) {
+    var wrapper = document.createElement('div');
+    wrapper.className = 'figure';
+
+    var valueEl = document.createElement('span');
+    valueEl.className = 'figure-value';
+    valueEl.textContent = value;
+
+    var labelEl = document.createElement('span');
+    labelEl.className = 'figure-label';
+    labelEl.textContent = label;
+
+    wrapper.appendChild(valueEl);
+    wrapper.appendChild(labelEl);
+    figuresEl.appendChild(wrapper);
+  }
+
+  // Opening the page from the filesystem blocks fetch() under the browser's
+  // same-origin rules, so explain how to serve it over HTTP instead.
+  function showFetchError() {
+    figuresEl.className = 'message';
+    figuresEl.textContent = '';
+
+    var line = document.createElement('p');
+    line.textContent = 'The figures could not be loaded. This site reads its data with fetch(), ' +
+      'which browsers block for pages opened directly from disk. Serve the folder over HTTP and ' +
+      'reload:';
+
+    var command = document.createElement('p');
+    var code = document.createElement('code');
+    code.textContent = 'python3 -m http.server';
+    command.appendChild(code);
+
+    figuresEl.appendChild(line);
+    figuresEl.appendChild(command);
+  }
+})();
+</script>
+
+</body>
+</html>

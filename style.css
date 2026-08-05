@@ -1,0 +1,432 @@
+/* onlinefinancialthreats.co.uk
+   Minimal typographic stylesheet. No external requests, no images, no icons. */
+
+:root {
+  --bg: #faf9f6;
+  --surface: #ffffff;
+  --text: #16161a;
+  --muted: #5c5c66;
+  --line: #e2e0da;
+  --line-strong: #cfccc4;
+  --accent: #2c4a7c;
+  --accent-dark: #1e3457;
+
+  /* Subdued legal-status tints. Restrained on purpose: this is a research
+     artefact, so the colour distinguishes categories without ranking them. */
+  --status-lawful-bg: #eef0f2;
+  --status-lawful-fg: #3f4750;
+  --status-regulatory-bg: #f6efe2;
+  --status-regulatory-fg: #6b5220;
+  --status-criminal-bg: #f5e9e7;
+  --status-criminal-fg: #7a3128;
+
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+    Arial, "Noto Sans", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.wrap {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 4rem 1.25rem 3rem;
+}
+
+/* ---------- Typography ---------- */
+
+h1 {
+  font-size: 2rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  margin: 0 0 0.75rem;
+  font-weight: 650;
+}
+
+h2 {
+  font-size: 1.1rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  margin: 3rem 0 1rem;
+}
+
+h3 {
+  font-size: 1.05rem;
+  font-weight: 620;
+  margin: 0;
+}
+
+p {
+  margin: 0 0 1.1rem;
+}
+
+.lede {
+  font-size: 1.15rem;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+}
+
+.placeholder {
+  border-left: 2px solid var(--line-strong);
+  padding-left: 1rem;
+  color: var(--muted);
+}
+
+.placeholder-note {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+a {
+  color: var(--accent);
+}
+
+a:hover {
+  color: var(--accent-dark);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ---------- Summary figures ---------- */
+
+.figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2.5rem;
+  margin: 2.5rem 0 3rem;
+  padding: 1.75rem 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.figure {
+  min-width: 7rem;
+}
+
+.figure-value {
+  display: block;
+  font-size: 2.5rem;
+  line-height: 1.05;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.figure-label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.35rem;
+}
+
+/* ---------- Buttons and links ---------- */
+
+.button {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 550;
+  padding: 0.8rem 1.6rem;
+  border-radius: 3px;
+  transition: background-color 0.12s ease-in-out;
+}
+
+.button:hover {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+.back-link {
+  display: inline-block;
+  font-size: 0.9rem;
+  margin-bottom: 1.75rem;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.9rem;
+  color: var(--accent);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link-button:hover {
+  color: var(--accent-dark);
+}
+
+/* ---------- Controls ---------- */
+
+.controls {
+  margin: 2rem 0 1.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-bottom: 1rem;
+}
+
+.field label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+
+input[type="search"],
+select {
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  padding: 0.55rem 0.65rem;
+  width: 100%;
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1rem;
+}
+
+.controls-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.count {
+  font-size: 0.9rem;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Heading kept for document structure and screen readers, but not shown:
+   the live count above it already labels the list visually. */
+.visually-hidden-heading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Result cards ---------- */
+
+.results {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  margin-bottom: 0.85rem;
+}
+
+.card > summary {
+  display: list-item;
+  list-style-position: outside;
+  margin-left: 1.5rem;
+  padding: 1.1rem 1.25rem 1.1rem 0;
+  cursor: pointer;
+  transition: background-color 0.12s ease-in-out;
+}
+
+.card > summary:hover {
+  background: #f4f2ee;
+}
+
+.card[open] > summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.threat-id {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.definition {
+  display: block;
+  margin-top: 0.4rem;
+  color: var(--muted);
+}
+
+.tags {
+  display: block;
+  margin-top: 0.7rem;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  padding: 0.15rem 0.5rem;
+  margin: 0.2rem 0.35rem 0 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.tag-status {
+  border-color: transparent;
+}
+
+.status-lawful-practice {
+  background: var(--status-lawful-bg);
+  color: var(--status-lawful-fg);
+}
+
+.status-regulatory-breach {
+  background: var(--status-regulatory-bg);
+  color: var(--status-regulatory-fg);
+}
+
+.status-criminal-offence {
+  background: var(--status-criminal-bg);
+  color: var(--status-criminal-fg);
+}
+
+.detail {
+  padding: 1.1rem 1.25rem;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.detail dt {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  margin-bottom: 0.15rem;
+}
+
+.detail dd {
+  margin: 0 0 0.9rem;
+}
+
+.detail dd:last-child {
+  margin-bottom: 0;
+}
+
+.source {
+  font-size: 0.9rem;
+}
+
+/* ---------- Messages ---------- */
+
+.message {
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  background: var(--surface);
+  padding: 1.25rem;
+  color: var(--muted);
+}
+
+.message p:last-child {
+  margin-bottom: 0;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.9em;
+  background: #eeece7;
+  padding: 0.1rem 0.35rem;
+  border-radius: 2px;
+  color: var(--text);
+}
+
+/* ---------- Footer ---------- */
+
+.site-footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.site-footer p {
+  margin-bottom: 0.75rem;
+}
+
+/* ---------- Narrow screens (down to 360px) ---------- */
+
+@media (max-width: 560px) {
+  body {
+    font-size: 16px;
+  }
+
+  .wrap {
+    padding: 2.5rem 1rem 2rem;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .figures {
+    gap: 1.5rem 2rem;
+  }
+
+  .figure-value {
+    font-size: 2rem;
+  }
+
+  .button {
+    display: block;
+    text-align: center;
+  }
+
+  .tag {
+    white-space: normal;
+  }
+}
