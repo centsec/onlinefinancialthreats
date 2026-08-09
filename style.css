@@ -357,6 +357,32 @@ select {
   font-size: 0.9rem;
 }
 
+/* ---------- Source list ---------- */
+
+.sources-note {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.sources {
+  margin: 1.5rem 0;
+}
+
+.sources dt {
+  font-weight: 600;
+  margin-top: 1.1rem;
+}
+
+.sources dd {
+  margin: 0.15rem 0 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.needs-reference {
+  font-style: italic;
+}
+
 /* ---------- Messages ---------- */
 
 .message {
