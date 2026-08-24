@@ -733,15 +733,15 @@
  },
  {
   "id": 62,
-  "threat": "Child Impersonation Scams",
-  "domain": "Media, Advertising & Social Platforms",
+  "threat": "Platform Authority Impersonation",
+  "domain": "Games & Virtual Money",
   "mechanism": "Social Influence",
-  "definition": "The user is impersonated to their parent via SMS or messaging app to extract money.",
+  "definition": "The user is contacted by someone posing as platform staff, a game moderator or official support, who warns of a ban, a hacked account or a rule breach and requests login credentials, in-game currency or a payment to resolve it.",
   "legalStatus": "Criminal Offence",
   "driver": "Cialdini's Principles of Influence",
   "ttmStage": "Action / Maintenance",
   "evidence": "Inferred",
-  "source": "Parentzone (2023)"
+  "source": "Kaspersky (2024)"
  },
  {
   "id": 63,
@@ -1030,5 +1030,29 @@
   "ttmStage": "Action / Maintenance",
   "evidence": "Inferred",
   "source": "Jensen & Kristiansen (2026)"
+ },
+ {
+  "id": 87,
+  "threat": "Gift Card / Voucher Code Extraction",
+  "domain": "Payments, Banking & Financial Services",
+  "mechanism": "Social Influence",
+  "definition": "The user is persuaded to buy a gift card or prepaid voucher and share the redemption code, transferring irrecoverable value to a person they cannot identify and outside any chargeback or refund route.",
+  "legalStatus": "Criminal Offence",
+  "driver": "Cialdini's Principles of Influence",
+  "ttmStage": "Action / Maintenance",
+  "evidence": "Inferred",
+  "source": "Parentzone (2023)"
+ },
+ {
+  "id": 88,
+  "threat": "Authorised Push Payment (APP) Fraud",
+  "domain": "Payments, Banking & Financial Services",
+  "mechanism": "Social Influence",
+  "definition": "The user is contacted by someone impersonating their bank or card provider, told their money is at immediate risk, and authorises a transfer to an account the caller controls.",
+  "legalStatus": "Criminal Offence",
+  "driver": "Cialdini's Principles of Influence",
+  "ttmStage": "Action / Maintenance",
+  "evidence": "Inferred",
+  "source": "Ofcom (2025c)"
  }
 ]
